@@ -1,4 +1,3 @@
-# logscrub.py
 # deltatime.py
 
 Use:
@@ -7,8 +6,14 @@ Use:
 This will show the highest time delta in the logfile indicitive of when the reboot/event happened.
 You can use this information to run logscrub to see differences of notifications before and/or after the event.
 
+# logscrub.py
+
 Use:
 ./logscrub.py <logfile.txt> [<starting_line>]
+
+This will show each time GPU_SXM_<i>x</i> or NVSwitch_<i>x</i> is shown along with its associated XID or SXID and the number of times it was observed in the file.
+
+# Example
 
 For example, if you have a logfile named mylogs.csv and deltatime returns a value of 154:
 
