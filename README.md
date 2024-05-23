@@ -19,7 +19,7 @@ For example, if you have a logfile named mylogs.csv and deltatime returns a valu
 
 $ ./deltatime.py mylogs.csv
 Processed 7401 total lines and found 7399 times where it crossed 0 threshold.
-High water mark: 745 seconds at line number 154 in log.
+ High water mark: 745 seconds at line number 154 in log.
 
 $ ./logscrub.py mylogs.csv 154
 Device name       Error          Count
