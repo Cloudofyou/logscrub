@@ -5,7 +5,7 @@ import re
 from datetime import datetime
 import argparse
 
-def process_file(input_file, highdelta_time):
+def process_file(input_file, highdelta_time, quiet):
     lasttime = 0
     highdelta = 0
     totlines = 0
@@ -28,17 +28,23 @@ def process_file(input_file, highdelta_time):
                         highmark_linenum = totlines
                     highdelta += 1
                     if highdelta_time > 0:
-                        print(f"{highdelta:3}) Time delta (in seconds): {deltatime} -- Timestamp: {timestamp} ({totlines})")
+                        if not quiet:
+                            print(f"{highdelta:3}) Time delta (in seconds): {deltatime} -- Timestamp: {timestamp} ({totlines})")
                 lasttime = curtime
                 formatted_timestamp = timestamp.strftime('%b-%d %H:%M:%S')
-    print(f"Processed {totlines} total lines and found {highdelta} times where it crossed {highdelta_time} threshold.")
-    print(f"High water mark: {highmark} seconds at line number {highmark_linenum} in log.")
+    if not quiet:
+        print(f"Processed {totlines} total lines and found {highdelta} times where it crossed {highdelta_time} threshold.")
+        print(f"High water mark: {highmark} seconds at line number {highmark_linenum} in log.")
+
+    return highmark_linenum
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='deltatime v1')
     parser.add_argument('input_file', type=str, help='Filename of log file to inspect')
     parser.add_argument('highdeltatime', type=int, nargs='?', default=0, help='Time threshold in seconds (Default: 0)')
+    parser.add_argument('-q', '--quiet', action='store_true', help='Run the program in quiet mode')
     args = parser.parse_args()
-    
-    process_file(args.input_file, args.highdeltatime)
+
+    retcode = process_file(args.input_file, args.highdeltatime, args.quiet)
+    exit(retcode)
 
