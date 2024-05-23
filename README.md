@@ -1,7 +1,7 @@
 # deltatime.py
 
 Use:
-./deltatime.py <&lt>logfile<&gt>
+./deltatime.py &lt;logfile&gt;
 
 This will show the highest time delta in the logfile indicitive of when the reboot/event happened.
 You can use this information to run logscrub to see differences of notifications before and/or after the event.
