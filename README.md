@@ -22,8 +22,29 @@ Processed 7401 total lines and found 7399 times where it crossed 0 threshold.<br
 High water mark: 745 seconds at line number 154 in log.
 
 $ ./logscrub.py mylogs.csv 154<br>
-Device name       Error          Count<br>
-----------------  -------------  ------<br>
-GPU_SXM_2          XID-43         19<br>
-GPU_SXM_3          XID-43         19<br>
-GPU_SXM_3          XID-37          2<br>
+<table>
+    <thead>
+        <tr>
+            <th>Device name</th>
+            <th>Error</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>GPU_SXM_2</td>
+            <td>XID-43</td>
+            <td>19</td>
+        </tr>
+        <tr>
+            <td>GPU_SXM_3</td>
+            <td>XID-43</td>
+            <td>19</td>
+        </tr>
+        <tr>
+            <td>GPU_SXM_4</td>
+            <td>XID-43</td>
+            <td>19</td>
+        </tr>
+    </tbody>
+</table>
