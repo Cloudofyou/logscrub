@@ -42,9 +42,9 @@ $ ./logscrub.py mylogs.csv 154<br>
             <td>19</td>
         </tr>
         <tr>
-            <td>GPU_SXM_4</td>
-            <td>XID-43</td>
-            <td>19</td>
+            <td>GPU_SXM_7</td>
+            <td>XID-37</td>
+            <td>1009</td>
         </tr>
     </tbody>
 </table>
