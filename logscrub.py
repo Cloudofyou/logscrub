@@ -36,6 +36,9 @@ def process_file(inputfile, counter, start_line, end_line):
                    key = f"{match.group(1)}-{match.group(2)}-{match.group(3)}"
                    counter[key] += 1
 
+##def search_file(inputfile, counter, start_line, end_line):
+##    pattern = 
+
 def main():
     parser = argparse.ArgumentParser(description='logscrub v1')
     parser.add_argument('input_file', type=str, help='Filename of log file to inspect')
