@@ -4,6 +4,7 @@ import sys
 import re
 from datetime import datetime
 import argparse
+import glob
 
 def process_file(input_file):
     lasttime = 0
@@ -49,9 +50,13 @@ def process_file(input_file):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='timeline v1')
-    parser.add_argument('input_file', type=str, help='Filename of log file to inspect')
+    parser.add_argument('filenames', nargs='+', help='Filename/wildcard of log file(s) to inspect')
     args = parser.parse_args()
 
-    retcode = process_file(args.input_file)
-    exit(retcode)
+    expanded_files = []
+    for pattern in args.filenames:
+        expanded_files.extend(glob.glob(pattern))
+
+    for input_file in expanded_files:
+        process_file(input_file)
 
