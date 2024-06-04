@@ -10,4 +10,5 @@ for filename in "$@"; do
     python3 deltatime.py $filename -q
     exit_code=$?
     echo "Highmark for " $filename " -> " $exit_code
+    python3 gshowline.py $filename $exit_code
 done
