@@ -7,11 +7,16 @@ from datetime import datetime
 import argparse
 import glob
 
+datetime_pattern = r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})|\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'
+
 @dataclass
 class LogErrors:
     devtype: str
     devnum: str
     count: int
+
+def extract_datetimes(line):
+    return re.findall(datatime_pattern, line)
 
 def find_highest_delta_time(inputfile):
     ## Returns the line number of the text file that contains the highest time delta between lines
@@ -22,6 +27,7 @@ def find_highest_delta_time(inputfile):
         lines = infile.readlines()
         for i, line in enumerate(lines):
             line = line.strip()
+#            find_timestamp = extract_datetimes(line)
             find_timestamp = re.match(r'^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z)', line)
             if find_timestamp:
                 # The line contains a timestamp
