@@ -58,7 +58,7 @@ def process_file(input_file, highdelta_time, quiet, offset, pretty):
                     if highdelta_time > 0:
                         if not quiet:
                             if pretty:
-                                print(f"{highdelta:3}) Time delta: {show_pretty(deltatime)} -- Timestamp: {timestamp} ({totlines})")
+                                print(f"{highdelta:3}) Time delta: {show_pretty(deltatime)} [{deltatime}] -- Timestamp: {timestamp} ({totlines})")
                             else: 
                                 print(f"{highdelta:3}) Time delta (in seconds): {deltatime} -- Timestamp: {timestamp} ({totlines})")
                 lasttime = curtime
@@ -67,7 +67,7 @@ def process_file(input_file, highdelta_time, quiet, offset, pretty):
         p_input_file = input_file.split('/')[-1]
         print(f"File: {p_input_file}")
         if pretty: 
-            print(f"High mark: {show_pretty(highmark)} (Line #{highmark_linenum})")
+            print(f"High mark: {show_pretty(highmark)} ({highmark}s) (Line #{highmark_linenum})")
         else:
             print(f"High mark: {highmark} ({highmark_linenum}")
         if highdelta_time > 0:
