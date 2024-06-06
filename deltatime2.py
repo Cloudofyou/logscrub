@@ -4,6 +4,7 @@ import sys
 import re
 from datetime import datetime
 import argparse
+import glob
 
 datetime_pattern = r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})|\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'
 
@@ -25,7 +26,7 @@ def process_file(input_file, highdelta_time, quiet, offset):
     totlines = 0
     highmark = 0
     highmark_linenum = 0
-    if offset < 0 or offset > 3:
+    if offset < 0 or offset > 1:
         offset = 0
     with open(input_file, 'r') as infile:
         lines = infile.readlines()
@@ -57,13 +58,19 @@ def process_file(input_file, highdelta_time, quiet, offset):
     return highmark_linenum
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='deltatime v1')
-    parser.add_argument('input_file', type=str, help='Filename of log file to inspect')
-    parser.add_argument('highdeltatime', type=int, nargs='?', default=0, help='Time threshold in seconds (Default: 0)')
-    parser.add_argument('offset', type=int, nargs='?', default=0, help='Timestamp offset index (Default: 0)')
+    parser = argparse.ArgumentParser(description='deltatime v2')
+    parser.add_argument('filenames', nargs='+', help='Filename/wildcard of log file(s) to inspect')
+    parser.add_argument('-ht', '--highdeltatime', type=int, default=0, help='Time threshold in seconds (Default: 0)')
+    parser.add_argument('-o', '--offset', type=int, default=0, help='Timestamp offset index (Default: 0)')
     parser.add_argument('-q', '--quiet', action='store_true', help='Run the program in quiet mode')
     args = parser.parse_args()
 
-    retcode = process_file(args.input_file, args.highdeltatime, args.quiet, args.offset)
+    expanded_files = []
+    for pattern in args.filenames:
+        expanded_files.extend(glob.glob(pattern))
+    
+    for file in expanded_files:
+        retcode = process_file(file, args.highdeltatime, args.quiet, args.offset)
+    
     exit(retcode)
 
