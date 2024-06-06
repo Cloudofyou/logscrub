@@ -6,10 +6,17 @@ from datetime import datetime
 import argparse
 import glob
 
+full_pattern = r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})|\[([A-Za-z]{3} [A-Za-z]{3} \d{1,2} \d{2}:\d{2}:\d{2} UTC \d{4})\]|\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'
 datetime_pattern = r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})|\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'
+human_pattern = r"\[([A-Za-z]{3} [A-Za-z]{3} \d{1,2} \d{2}:\d{2}:\d{2} UTC \d{4})\]"
 
-def extract_datetimes(line):
-    return re.findall(datetime_pattern, line)
+def convert_to_iso(datecode):
+    datecode = datecode.strip("[]")
+    dt = datetime.strptime(datecode, "%a %b %d %H:%M:%S %Z %Y")
+    return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+def extract_datetimes(line, pattern):
+    return re.findall(pattern, line)
 
 def show_pretty(ttime):
     # Calculate hours, minutes, and seconds
@@ -37,17 +44,24 @@ def process_file(input_file, highdelta_time, quiet, offset, pretty):
     totlines = 0
     highmark = 0
     highmark_linenum = 0
-    if offset < 1 or offset > 2:
+    if offset < 1 or offset > 3:
         offset = 1
     with open(input_file, 'r') as infile:
         lines = infile.readlines()
         for i, line in enumerate(lines):
             totlines += 1
-            original_line = line.strip()
-            timestamp_match = extract_datetimes(line)
+            timestamp_match = extract_datetimes(line, datetime_pattern)
+            timestamp_match_human = extract_datetimes(line, human_pattern)
             if timestamp_match:
-                timestamp_str = timestamp_match[offset-1]
-                timestamp = clean_and_convert_datetime(timestamp_str)
+                if timestamp_match_human and offset==3:
+                    timestamp_str = convert_to_iso(timestamp_match_human[0]) 
+                else:    
+                    timestamp_str = timestamp_match[offset-1]
+                if offset==3:
+                    timestamp = clean_and_convert_datetime(timestamp_str)
+                    # timestamp = clean_and_convert_datetime(convert_to_iso(timestamp_str))
+                else:
+                    timestamp = clean_and_convert_datetime(timestamp_str)
                 curtime = timestamp.second + timestamp.minute*60 + timestamp.hour*3600
                 deltatime = curtime - lasttime
                 if (deltatime >= highdelta_time) and (lasttime):
@@ -69,7 +83,7 @@ def process_file(input_file, highdelta_time, quiet, offset, pretty):
         if pretty: 
             print(f"High mark: {show_pretty(highmark)} ({highmark}s) (Line #{highmark_linenum})")
         else:
-            print(f"High mark: {highmark} ({highmark_linenum}")
+            print(f"High mark: {highmark} (#{highmark_linenum})")
         if highdelta_time > 0:
             print(f"Crossed {highdelta_time} threshold - ( {highdelta:7} / {totlines:7} )")      
 
