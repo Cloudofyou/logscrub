@@ -57,15 +57,21 @@ def process_file(input_file, highdelta_time, quiet, offset, pretty):
                     highdelta += 1
                     if highdelta_time > 0:
                         if not quiet:
-                            print(f"{highdelta:3}) Time delta (in seconds): {deltatime} -- Timestamp: {timestamp} ({totlines})")
+                            if pretty:
+                                print(f"{highdelta:3}) Time delta: {show_pretty(deltatime)} -- Timestamp: {timestamp} ({totlines})")
+                            else: 
+                                print(f"{highdelta:3}) Time delta (in seconds): {deltatime} -- Timestamp: {timestamp} ({totlines})")
                 lasttime = curtime
                 formatted_timestamp = timestamp.strftime('%b-%d %H:%M:%S')
     if not quiet:
-        print(f"Processed {totlines} total lines and found {highdelta} times where it crossed {highdelta_time} threshold.")
-        if pretty:
-            print(f"High water mark ===>  {show_pretty(highmark)} at line number {highmark_linenum} in log {input_file}")
+        p_input_file = input_file.split('/')[-1]
+        print(f"File: {p_input_file}")
+        if pretty: 
+            print(f"High mark: {show_pretty(highmark)} (Line #{highmark_linenum})")
         else:
-            print(f"High water mark ===>  {highmark} seconds at line number {highmark_linenum} in log {input_file}")
+            print(f"High mark: {highmark} ({highmark_linenum}")
+        if highdelta_time > 0:
+            print(f"Crossed {highdelta_time} threshold - ( {highdelta:7} / {totlines:7} )")      
 
     return highmark_linenum
 
