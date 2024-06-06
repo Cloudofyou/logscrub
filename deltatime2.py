@@ -56,12 +56,11 @@ def process_file(input_file, highdelta_time, quiet, offset, pretty):
                 if timestamp_match_human and offset==3:
                     timestamp_str = convert_to_iso(timestamp_match_human[0]) 
                 else:    
-                    timestamp_str = timestamp_match[offset-1]
-                if offset==3:
-                    timestamp = clean_and_convert_datetime(timestamp_str)
-                    # timestamp = clean_and_convert_datetime(convert_to_iso(timestamp_str))
-                else:
-                    timestamp = clean_and_convert_datetime(timestamp_str)
+                    if offset==3:
+                        timestamp_str = timestamp_match[0]
+                    else:
+                        timestamp_str = timestamp_match[offset-1]
+                timestamp = clean_and_convert_datetime(timestamp_str)
                 curtime = timestamp.second + timestamp.minute*60 + timestamp.hour*3600
                 deltatime = curtime - lasttime
                 if (deltatime >= highdelta_time) and (lasttime):
