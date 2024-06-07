@@ -9,7 +9,7 @@ def get_directory_snapshot(directory):
     
     for root, dirs, files in os.walk(directory):
         for name in sorted(dirs + files):
-            if name.endswith('.hash'):
+            if name.endswith('.hash') or name.endswith('.git'):
                 continue  # Ignore files ending in .hash
             
             filepath = os.path.join(root, name)
