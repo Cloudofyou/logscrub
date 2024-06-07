@@ -76,9 +76,7 @@ if __name__ == "__main__":
     hash_filename_time = ".snapshot.local." + timestamp + ".hash"
 
     if hash_file_exists2(directory_path, snapshot_hash):
-        if same_hash_value_exists:
-            sameval = True
-        else:
+        if not same_hash_value_exists:
             pattern = '.snapshot.local.*.hash'
             look_for_old_hash_files = glob.glob(pattern)
             if look_for_old_hash_files:
