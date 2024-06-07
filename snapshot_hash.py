@@ -3,6 +3,7 @@
 import os
 import hashlib
 from datetime import datetime
+import glob
 
 def get_directory_snapshot(directory):
     hash_obj = hashlib.sha256()
@@ -47,15 +48,14 @@ def same_hash(snapshot_hash):
             lines = infile.readlines()
             for line in lines:
                 if line == snapshot_hash:
-                    print("Same hash!")
                     retvalue = True
                 else:
                     retvalue = False
-                    print(f"line = {line}  hash = {snapshot_hash}") 
 
     return retvalue
 
 def write_to_file(filename, hash):
+    print(f"Writing to file: {filename}")
     with open(filename, 'w') as f:
         f.write(hash)        
 
@@ -66,25 +66,29 @@ if __name__ == "__main__":
     # Generate the snapshot hash
     snapshot_hash = get_directory_snapshot(directory_path)
     same_hash_value_exists = same_hash(snapshot_hash)
-    print(f"same_hash_value_exists  =  {same_hash_value_exists}")
  
     # Print the resulting hash value
     print(f"Directory snapshot hash: {snapshot_hash}")
 
+    sameval = False
     hash_filename = ".snapshot.local.hash"
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     hash_filename_time = ".snapshot.local." + timestamp + ".hash"
-    print(f"hash_filename       = {hash_filename}")
-    print(f"hash_filename_time  = {hash_filename_time}")
 
     if hash_file_exists2(directory_path, snapshot_hash):
-        print("hash_file_exists = True")
         if same_hash_value_exists:
-            print("same_hash_value_exists = True")
+            sameval = True
         else:
+            pattern = '.snapshot.local.*.hash'
+            look_for_old_hash_files = glob.glob(pattern)
+            if look_for_old_hash_files:
+                for file in look_for_old_hash_files:
+                    try:
+                        os.remove(file)
+                    except:
+                        print(f"can't remove file: {file}")
             os.rename(hash_filename, hash_filename_time)
             write_to_file(hash_filename, snapshot_hash) 
     else:
-        print("hash_file_exists = False")
         write_to_file(hash_filename, snapshot_hash)
     
