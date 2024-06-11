@@ -69,8 +69,9 @@ def process_file(input_file, highdelta_time, quiet, offset, pretty):
                 deltatime = curtime - lasttime
                 if first_run:
                     first_run = False
+                    start_timestamp = timestamp
                     if not quiet:
-                        print(f"Start time       : {show_pretty(curtime)} -- Timestamp: {timestamp}")
+                        print(f"Start time       : {timestamp}")
                 if (deltatime >= highdelta_time) and (lasttime):
                     if deltatime > highmark:
                         highmark = deltatime
@@ -86,14 +87,12 @@ def process_file(input_file, highdelta_time, quiet, offset, pretty):
                 formatted_timestamp = timestamp.strftime('%b-%d %H:%M:%S')
     if not quiet:
         if pretty: 
-#            print(f"Largest time gap : {show_pretty(highmark)} ({highmark}s) (Line #{highmark_linenum})")
              print(f"Largest time gap : {show_pretty(highmark)} -- Timestamp: {timestamp}   (Line #{highmark_linenum})")
         else:
-#            print(f"Largest time gap : {highmark} (#{highmark_linenum})")
              print(f"Largest time gap : {highmark} -- Timestamp: {timestamp}   (Line #{highmark_linenum})")
         if highdelta_time > 0:
             print(f"Crossed {highdelta_time} threshold - ( {highdelta:7} / {totlines:7} )")      
-        print(f"End time         : {show_pretty(curtime)} -- Timestamp: {timestamp}")
+        print(f"End time         : {timestamp}  ({timestamp-start_timestamp})")
 
     return highmark_linenum
 

@@ -3,6 +3,8 @@
 import re
 from datetime import datetime
 import os
+import glob
+import argparse
 import sys
 
 datetime_pattern = r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})|\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'
@@ -56,11 +58,20 @@ def save_sorted_lines(input_file, sorted_lines):
     return new_file_name
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: ./delta_jp1.py <filename>")
-        sys.exit(1)
+#    if len(sys.argv) != 2:
+#        print("Usage: ./delta_jp1.py <filename>")
+#        sys.exit(1)
+#
+#    input_file = sys.argv[1]
+    parser = argparse.ArgumentParser(description='jp_time v1')
+    parser.add_argument('filenames', nargs='+', help='Filename/wildcard of log file(s) to inspect')
+    args = parser.parse_args()
 
-    input_file = sys.argv[1]
-    sorted_lines = sort_lines_by_timestamp(input_file)
-    new_file_name = save_sorted_lines(input_file, sorted_lines)
-    print(f"Sorted file saved as: {new_file_name}")
+    expanded_files = []
+    for pattern in args.filenames:
+        expanded_files.extend(glob.glob(pattern))
+    
+    for input_file in expanded_files:
+        sorted_lines = sort_lines_by_timestamp(input_file)
+        new_file_name = save_sorted_lines(input_file, sorted_lines)
+        print(f"Sorted file saved as: {new_file_name}")
